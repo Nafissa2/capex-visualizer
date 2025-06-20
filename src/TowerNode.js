@@ -12,7 +12,7 @@ export default function TowerNode({ data }) {
       background: '#0C154B',
       border: '1px solid black',
       borderRadius: 8,
-      width: 200,     // ✅ Largeur fixe du conteneur
+      width: 500,     // ✅ Largeur fixe du conteneur
       height: 200,    // ✅ Hauteur fixe du conteneur
     }}>
       <div style={{
