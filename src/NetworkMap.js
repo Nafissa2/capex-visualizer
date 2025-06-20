@@ -79,7 +79,7 @@ const nodes = [
   {
     id: 'tower2',
     type: 'tower',
-    position: { x: 1700, y: -680 },
+    position: { x:1500, y: -680 },
     data: { label: 'RAN Tower 2', image: '/tower3.png.jpg' },
   },
   {
