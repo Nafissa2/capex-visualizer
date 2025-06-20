@@ -47,7 +47,7 @@ const nodes = [
   {
     id: 'datacenter-info',
     type: 'datacenterinfo',
-    position: { x: 2000, y: 300 },
+    position: { x: 0, y: 0 },
     data: {
       label: 'Data Center',
       details: [
@@ -251,7 +251,6 @@ export default function NetworkMap() {
         edges={edges}
         nodeTypes={nodeTypes}
         edgeTypes={{ custom: CustomEdge }}
-        fitView
       >
         <Background color="transparent" />
         <Controls />
