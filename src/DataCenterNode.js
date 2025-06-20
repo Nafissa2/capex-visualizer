@@ -19,7 +19,7 @@ export default function DataCenterNode({ data }) {
         src={data.image}
         alt="DC"
         style={{
-          width: '1100px', // ✅ Ajuste ici la taille finale de ton DataCenter
+          width: '700px', // ✅ Ajuste ici la taille finale de ton DataCenter
           height: 'auto',
           display: 'block',
           border: 'none',
