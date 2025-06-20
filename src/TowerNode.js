@@ -10,10 +10,8 @@ export default function TowerNode({ data }) {
       position: 'relative',
       padding: 10,
       background: '#0C154B',
-      border: '1px solid black',
-      borderRadius: 8,
-      width: 500,     // ✅ Largeur fixe du conteneur
-      height: 200,    // ✅ Hauteur fixe du conteneur
+      width: 1000,
+      height: 200,
     }}>
       <div style={{
         fontWeight: 'bold',
@@ -21,7 +19,6 @@ export default function TowerNode({ data }) {
         background: '#0C154B',
         color: '#fff',
         padding: '2px 6px',
-        borderRadius: 4
       }}>
         {data.label}
       </div>
@@ -29,9 +26,9 @@ export default function TowerNode({ data }) {
         src={data.image} 
         alt="Tower" 
         style={{ 
-          width: '100%',   // ✅ Prend toute la largeur du conteneur
-          height: '100%',  // ✅ Prend toute la hauteur
-          objectFit: 'contain'  // ✅ Ne déforme pas l’image
+          width: '100%', 
+          height: '100%', 
+          objectFit: 'contain' 
         }} 
       />
       <Handle type="source" position={Position.Right} style={{ background: '#0C154B' }} />
