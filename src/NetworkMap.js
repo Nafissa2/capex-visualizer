@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+
 import RanInfoBox from './RanInfoBox';
 import FiberInfoBox from './FiberInfoBox';
 import DataCenterInfoBox from './DataCenterInfoBox';
@@ -27,97 +28,6 @@ const nodeTypes = {
   energyinfo: EnergyInfoBox,
   towerinfo: TowerInfoBox,
 };
-
-// ✅ Voici bien le tableau nodes que tu avais oublié de coller !
-const nodes = [
-  {
-    id: 'fiber-info',
-    type: 'fiberinfo',
-    position: { x: 675, y: 250 },
-    data: {
-      label: 'FIBER',
-      details: [
-        { name: 'Transmission Backbone(TX)', price: '$7k' },
-        { name: 'Metro(TX)', price: '$15k' },
-        { name: 'MW (Microwave)', price: '$7.5k-$15k/line' },
-        { name: 'Satellite', price: '$?k' },
-      ],
-    },
-  },
-  {
-    id: 'datacenter-info',
-    type: 'datacenterinfo',
-    position: { x: 0, y: 0 },
-    data: {
-      label: 'Data Center',
-      details: [
-        { name: 'Total Data-center', price: '$10k-$20k' },
-        { name: 'Core Network - Internet', price: '$1-2/Subs/an' },
-        { name: 'Core Network - Voice', price: '$?k' },
-        { name: 'Core Network - SMS', price: '$?' },
-        { name: 'IT Stack - BSS', price: '$?' },
-        { name: 'IT Stack - MFS', price: '$?' },
-        { name: 'IT Stack - IT', price: '?' },
-      ],
-    },
-  },
-  {
-    id: 'energy-info',
-    type: 'energyinfo',
-    position: { x: 550, y: 0 },
-    data: {
-      label: 'Energy',
-      price: '$10k-$25k',
-    },
-  },
-  {
-    id: 'tower1',
-    type: 'tower',
-    position: { x: -150, y: -1000 },
-    data: { label: 'RAN Tower 1', image: '/tower3.png.jpg' },
-  },
-  {
-    id: 'tower2',
-    type: 'tower',
-    position: { x:2000, y: -1000 },
-    data: { label: 'RAN Tower 2', image: '/tower3.png.jpg' },
-  },
-  {
-    id: 'datacenter',
-    type: 'datacenter',
-    position: { x: 900, y: 100 },
-    data: { label: 'Data Center', image: '/datacenter3.png.jpg' },
-  },
-  {
-    id: 'energy',
-    type: 'energy',
-    position: { x: 700, y: -100 },
-    data: { label: 'Energy Unit', image: '/energy.png' },
-  },
-  {
-    id: 'energy2',
-    type: 'energy',
-    position: { x: 2950, y: -150 },
-    data: { label: 'Energy Unit', image: '/energy.png' },
-  },
-  {
-    id: 'ran-info',
-    type: 'raninfo',
-    position: { x: 700, y: -700 },
-    data: {
-      label: 'RAN & Tower',
-      details: [
-        { name: 'BuildPrice', price: '$80k-$100k/tower(rural) and $100k-$120k/tower(urban)' },
-        { name: 'UpgradePrice', price: '$7k-$15k/an' },
-        { name: 'Lease', price: '$20k/tour/year' },
-        { name: '2G', price: '$25k-$35k' },
-        { name: '3G', price: '$25k-$35k' },
-        { name: '4G', price: '$25k-$35k' },
-        { name: '5G', price: '$40k-$50k' },
-      ],
-    },
-  },
-];
 
 const edges = [
   {
@@ -237,15 +147,114 @@ const edges = [
 ];
 
 export default function NetworkMap() {
+
+  // ✅ useState placé CORRECTEMENT à l'intérieur
+  const [nodes, setNodes] = useState([
+    {
+      id: 'fiber-info',
+      type: 'fiberinfo',
+      position: { x: 675, y: 250 },
+      data: {
+        label: 'FIBER',
+        details: [
+          { name: 'Transmission Backbone(TX)', price: '$7k' },
+          { name: 'Metro(TX)', price: '$15k' },
+          { name: 'MW (Microwave)', price: '$7.5k-$15k/line' },
+          { name: 'Satellite', price: '$?k' },
+        ],
+      },
+    },
+    {
+      id: 'datacenter-info',
+      type: 'datacenterinfo',
+      position: { x: 0, y: 0 },
+      data: {
+        label: 'Data Center',
+        details: [
+          { name: 'Total Data-center', price: '$10k-$20k' },
+          { name: 'Core Network - Internet', price: '$1-2/Subs/an' },
+          { name: 'Core Network - Voice', price: '$?k' },
+          { name: 'Core Network - SMS', price: '$?' },
+          { name: 'IT Stack - BSS', price: '$?' },
+          { name: 'IT Stack - MFS', price: '$?' },
+          { name: 'IT Stack - IT', price: '?' },
+        ],
+      },
+    },
+    {
+      id: 'energy-info',
+      type: 'energyinfo',
+      position: { x: 550, y: 0 },
+      data: {
+        label: 'Energy',
+        price: '$10k-$25k',
+      },
+    },
+    {
+      id: 'tower1',
+      type: 'tower',
+      position: { x: -150, y: -1000 },
+      data: { label: 'RAN Tower 1', image: '/tower3.png.jpg' },
+    },
+    {
+      id: 'tower2',
+      type: 'tower',
+      position: { x: 2000, y: -1000 },
+      data: { label: 'RAN Tower 2', image: '/tower3.png.jpg' },
+    },
+    {
+      id: 'datacenter',
+      type: 'datacenter',
+      position: { x: 900, y: 100 },
+      data: { label: 'Data Center', image: '/datacenter3.png.jpg' },
+    },
+    {
+      id: 'energy',
+      type: 'energy',
+      position: { x: 700, y: -100 },
+      data: { label: 'Energy Unit', image: '/energy.png' },
+    },
+    {
+      id: 'energy2',
+      type: 'energy',
+      position: { x: 2950, y: -150 },
+      data: { label: 'Energy Unit', image: '/energy.png' },
+    },
+    {
+      id: 'ran-info',
+      type: 'raninfo',
+      position: { x: 700, y: -700 },
+      data: {
+        label: 'RAN & Tower',
+        details: [
+          { name: 'BuildPrice', price: '$80k-$100k/tower(rural) and $100k-$120k/tower(urban)' },
+          { name: 'UpgradePrice', price: '$7k-$15k/an' },
+          { name: 'Lease', price: '$20k/tour/year' },
+          { name: '2G', price: '$25k-$35k' },
+          { name: '3G', price: '$25k-$35k' },
+          { name: '4G', price: '$25k-$35k' },
+          { name: '5G', price: '$40k-$50k' },
+        ],
+      },
+    },
+  ]);
+
   return (
-    <div style={{
-      width: '100%',
-      height: '1000px',
-      backgroundImage: 'url("/background4.png")',
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
-    }}>
+    <div style={{ width: '100%', height: '1000px' }}>
+      <button
+        style={{ margin: 10, padding: '8px 12px', fontWeight: 'bold' }}
+        onClick={() => {
+          setNodes(prev =>
+            prev.map(node =>
+              node.id === 'tower1'
+                ? { ...node, position: { x: 500, y: -500 } }
+                : node
+            )
+          );
+        }}
+      >
+        Déplacer Tower1 🚀
+      </button>
       <ReactFlow
         nodes={nodes}
         edges={edges}
