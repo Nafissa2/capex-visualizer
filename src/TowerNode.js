@@ -17,12 +17,13 @@ export default function TowerNode({ data }) {
         fontWeight: 'bold',
         marginBottom: 5,
         background: '#0C154B',
+        color: '#fff',
         padding: '2px 6px',
         borderRadius: 4
       }}>
         {data.label}
       </div>
-      <img src={data.image} alt="Tower" style={{ width: 1000 }} />
+      <img src={data.image} alt="Tower" style={{ width: 250 }} />
       <Handle type="source" position={Position.Right} style={{ background: '#0C154B' }} />
       <Handle type="target" position={Position.Left} style={{ background: '#0C154B' }} />
     </div>
