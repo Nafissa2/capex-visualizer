@@ -9,15 +9,11 @@ export default function TowerNode({ data }) {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        position: 'relative',
-        padding: 0,
         background: 'transparent',
         border: 'none',
-        outline: 'none',
       }}
     >
-      {/* ✅ CONTENEUR FIXE */}
-      <div style={{ width: '200px' }}>
+      <div style={{ width: '400px', maxWidth: '200px' }}>
         <img
           src={data.image}
           alt="Tower"
@@ -25,7 +21,6 @@ export default function TowerNode({ data }) {
             width: '100%',
             height: 'auto',
             display: 'block',
-            userSelect: 'none',
           }}
           draggable={false}
         />
@@ -44,3 +39,4 @@ export default function TowerNode({ data }) {
     </div>
   );
 }
+
