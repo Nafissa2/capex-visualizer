@@ -13,7 +13,7 @@ export default function TowerNode({ data }) {
         border: 'none',
       }}
     >
-      <div style={{ width: '400px', maxWidth: '200px' }}>
+      <div style={{ width: '100px', maxWidth: '200px' }}>
         <img
           src={data.image}
           alt="Tower"
