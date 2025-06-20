@@ -20,7 +20,7 @@ export default function TowerNode({ data }) {
         src={data.image}
         alt="Tower"
         style={{
-          width: '900px',  // ✅ Ici tu ajustes la taille à volonté (ex: 250px, 300px, 400px)
+          width: '2000px',  // ✅ Ici tu ajustes la taille à volonté (ex: 250px, 300px, 400px)
           height: 'auto',  // ✅ Préserve le ratio
           border: 'none',
           outline: 'none',
