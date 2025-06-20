@@ -4,8 +4,8 @@ import { Handle, Position } from 'reactflow';
 export default function TowerNode({ data }) {
   return (
     <div style={{
-      width: 1000,     // ✅ Taille finale du nœud entier
-      height: 1000,
+      width: 900,     // ✅ Taille finale du nœud entier
+      height: 900,
       position: 'relative',
       background: 'transparent',
       display: 'flex',
