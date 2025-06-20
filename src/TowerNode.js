@@ -16,9 +16,9 @@ export default function TowerNode({ data }) {
     }}>
       {/* Label positionné en absolute au-dessus si tu veux */}
       <div style={{
-  width: 550,
-  height: 550,
-  flexShrink: 0,     // ✅ Clé : ne pas rétrécir !
+  width: 350,
+  height: 300,
+  flexShrink: 0,      
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
