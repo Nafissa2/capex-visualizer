@@ -240,33 +240,28 @@ export default function NetworkMap() {
   return (
     <div style={{
       width: '100%',
-      height: '1000px',
+      height: '100vh', // ✅ auto-adapté à l'écran
       backgroundImage: 'url("/background4.png")',
       backgroundSize: 'cover',
       backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
     }}>
-    <ReactFlow
-  nodes={nodes}
-  edges={edges}
-  nodeTypes={nodeTypes}
-  edgeTypes={{ custom: CustomEdge }}
-  defaultViewport={{
-    x: 0,
-    y: 0,
-    zoom: 1.5, // ➜ plus grand au chargement
-  }}
-  fitView
-  fitViewOptions={{
-    padding: 0.2,
-  }}
-  minZoom={0.5}
-  maxZoom={2}
->
-  <Background color="transparent" />
-  <Controls />
-</ReactFlow>
-
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        nodeTypes={nodeTypes}
+        edgeTypes={{ custom: CustomEdge }}
+        defaultViewport={{
+          x: 0,
+          y: 0,
+          zoom: 1.2, // ✅ ton échelle par défaut
+        }}
+        fitView={false} // ✅ désactive le zoom auto
+        minZoom={0.5}
+        maxZoom={2}
+      >
+        <Background color="transparent" />
+        <Controls />
+      </ReactFlow>
     </div>
   );
 }
