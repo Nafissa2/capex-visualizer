@@ -12,6 +12,8 @@ export default function TowerNode({ data }) {
       background: '#0C154B',
       width: 1000,
       height: 200,
+      background: 'transparent',
+
     }}>
       <div style={{
         fontWeight: 'bold',
