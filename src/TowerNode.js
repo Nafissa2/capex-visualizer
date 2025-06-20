@@ -17,7 +17,7 @@ export default function TowerNode({ data }) {
       }}
     >
       {/* ✅ CONTENEUR FIXE */}
-      <div style={{ width: '250px' }}>
+      <div style={{ width: '200px' }}>
         <img
           src={data.image}
           alt="Tower"

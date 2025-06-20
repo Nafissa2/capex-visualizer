@@ -251,16 +251,16 @@ export default function NetworkMap() {
   edges={edges}
   nodeTypes={nodeTypes}
   edgeTypes={{ custom: CustomEdge }}
-  fitView
-  fitViewOptions={{
-    padding: 0.3, // espace autour
-  }}
   defaultViewport={{
     x: 0,
     y: 0,
-    zoom: 1,
+    zoom: 1.5, // ➜ plus grand au chargement
   }}
-  minZoom={0.2}
+  fitView
+  fitViewOptions={{
+    padding: 0.2,
+  }}
+  minZoom={0.5}
   maxZoom={2}
 >
   <Background color="transparent" />
