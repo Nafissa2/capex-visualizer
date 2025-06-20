@@ -5,7 +5,7 @@ export default function TowerNode({ data }) {
   return (
     <div style={{
       width: 1000,     // ✅ Taille finale du nœud entier
-      height: 400,
+      height: 1000,
       position: 'relative',
       background: 'transparent',
       display: 'flex',
