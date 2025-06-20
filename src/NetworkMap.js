@@ -28,7 +28,7 @@ const nodeTypes = {
   towerinfo: TowerInfoBox,
 };
 
-// ✅ Voici bien le tableau nodes que tu avais oublié de coller !
+// Voici bien le tableau nodes que tu avais oublié de coller !
 const nodes = [
   {
     id: 'fiber-info',
@@ -85,7 +85,7 @@ const nodes = [
   {
     id: 'datacenter',
     type: 'datacenter',
-    position: { x: 900, y: 200 },
+    position: { x: 0, y: 0 },
     data: { label: 'Data Center', image: '/datacenter3.png.jpg' },
   },
   {
@@ -246,16 +246,27 @@ export default function NetworkMap() {
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
     }}>
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        nodeTypes={nodeTypes}
-        edgeTypes={{ custom: CustomEdge }}
-        fitView
-      >
-        <Background color="transparent" />
-        <Controls />
-      </ReactFlow>
+    <ReactFlow
+  nodes={nodes}
+  edges={edges}
+  nodeTypes={nodeTypes}
+  edgeTypes={{ custom: CustomEdge }}
+  fitView
+  fitViewOptions={{
+    padding: 0.3, // espace autour
+  }}
+  defaultViewport={{
+    x: 0,
+    y: 0,
+    zoom: 1,
+  }}
+  minZoom={0.2}
+  maxZoom={2}
+>
+  <Background color="transparent" />
+  <Controls />
+</ReactFlow>
+
     </div>
   );
 }
