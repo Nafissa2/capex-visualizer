@@ -16,16 +16,15 @@ export default function TowerNode({ data }) {
     }}>
       {/* Label positionné en absolute au-dessus si tu veux */}
       <div style={{
-        position: 'absolute',
-        top: 0,
-        left: '50%',
-        transform: 'translateX(-50%)',
-        fontWeight: 'bold',
-        color: '#fff',
-        background: '#0C154B',
-        padding: '2px 6px',
-        borderRadius: 4,
-      }}>
+  width: 400,
+  height: 400,
+  flexShrink: 0,     // ✅ Clé : ne pas rétrécir !
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  background: 'transparent',
+  position: 'relative',
+}}>
         {data.label}
       </div>
       
