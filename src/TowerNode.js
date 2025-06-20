@@ -10,17 +10,15 @@ export default function TowerNode({ data }) {
       position: 'relative',
       padding: 10,
       background: '#0C154B',
-      border: 'none',
+      border: '1px solid black',
       borderRadius: 8,
-      outline: 'none',
     }}>
       <div style={{
         fontWeight: 'bold',
         marginBottom: 5,
         background: '#0C154B',
         padding: '2px 6px',
-        borderRadius: 4,
-        outline: 'none',
+        borderRadius: 4
       }}>
         {data.label}
       </div>

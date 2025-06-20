@@ -17,10 +17,6 @@ import DataCenterNode from './DataCenterNode';
 import EnergyNode from './EnergyNode';
 import CustomEdge from './CustomEdge';
 
-
-
-
-
 const nodeTypes = {
   tower: TowerNode,
   datacenter: DataCenterNode,
@@ -32,53 +28,48 @@ const nodeTypes = {
   towerinfo: TowerInfoBox,
 };
 
-
-
+// ✅ Voici bien le tableau nodes que tu avais oublié de coller !
 const nodes = [
-    
- 
-
-    {
-  id: 'fiber-info',
-  type: 'fiberinfo',
-  position: { x: 675, y: 250 },
-  data: {
-    label: 'FIBER',
-    details: [
-      { name: 'Transmission Backbone(TX)', price: '$7k' },
-      { name: 'Metro(TX)', price: '$15k' },
-      { name: 'MW (Microwave)', price: '$7.5k-$15k/line' },
-      { name: 'Satellite', price: '$?k' },
-    ],
+  {
+    id: 'fiber-info',
+    type: 'fiberinfo',
+    position: { x: 675, y: 250 },
+    data: {
+      label: 'FIBER',
+      details: [
+        { name: 'Transmission Backbone(TX)', price: '$7k' },
+        { name: 'Metro(TX)', price: '$15k' },
+        { name: 'MW (Microwave)', price: '$7.5k-$15k/line' },
+        { name: 'Satellite', price: '$?k' },
+      ],
+    },
   },
-},
-{
-  id: 'datacenter-info',
-  type: 'datacenterinfo',
-  position: { x: 1950, y:300 },
-  data: {
-    label: 'Data Center',
-    details: [
-      { name: 'Total Data-center', price: '$10k-$20k' },  
-      { name: 'Core Network - Internet', price: '$1-2/Subs/an' },
-      { name: 'Core Network - Voice', price: '$?k' },
-      { name: 'Core Network - SMS', price: '$?' },
-      { name: 'IT Stack - BSS', price: '$?' },
-      { name: 'IT Stack - MFS', price: '$?' },
-      { name: 'IT Stack - IT', price: '?' },
-    ],
+  {
+    id: 'datacenter-info',
+    type: 'datacenterinfo',
+    position: { x: 2000, y: 300 },
+    data: {
+      label: 'Data Center',
+      details: [
+        { name: 'Total Data-center', price: '$10k-$20k' },
+        { name: 'Core Network - Internet', price: '$1-2/Subs/an' },
+        { name: 'Core Network - Voice', price: '$?k' },
+        { name: 'Core Network - SMS', price: '$?' },
+        { name: 'IT Stack - BSS', price: '$?' },
+        { name: 'IT Stack - MFS', price: '$?' },
+        { name: 'IT Stack - IT', price: '?' },
+      ],
+    },
   },
-},
-{
-  id: 'energy-info',
-  type: 'energyinfo',
-  position: { x: 550, y: 0 },
-  data: {
-    label: 'Energy',
-    price: '$10k-$25k',
+  {
+    id: 'energy-info',
+    type: 'energyinfo',
+    position: { x: 550, y: 0 },
+    data: {
+      label: 'Energy',
+      price: '$10k-$25k',
+    },
   },
-},
-
   {
     id: 'tower1',
     type: 'tower',
@@ -88,13 +79,13 @@ const nodes = [
   {
     id: 'tower2',
     type: 'tower',
-    position: { x: 1900, y: -680},
+    position: { x:1400, y: -680 },
     data: { label: 'RAN Tower 2', image: '/tower3.png.jpg' },
   },
   {
     id: 'datacenter',
     type: 'datacenter',
-    position: { x: 900, y: 300 },
+    position: { x: 900, y: 200 },
     data: { label: 'Data Center', image: '/datacenter3.png.jpg' },
   },
   {
@@ -110,31 +101,30 @@ const nodes = [
     data: { label: 'Energy Unit', image: '/energy.png' },
   },
   {
-  id: 'ran-info',
-  type: 'raninfo',
-  position: { x: 700, y: -700 }, 
-  data: {
-    label: 'RAN & Tower',
-    details: [
-      { name: 'BuildPrice', price: '$80k-$100k/tower(rural) and $100k-$120k/tower(urban)' },
-      { name: 'UpgradePrice', price: '$7k-$15k/an' },
-      { name: 'Lease', price: '$20k/tour/year' },  
-      { name: '2G', price: '$25k-$35k' },
-      { name: '3G', price: '$25k-$35k' },
-      { name: '4G', price: '$25k-$35k' },
-      { name: '5G', price: '$40k-$50k' },
-    ],
+    id: 'ran-info',
+    type: 'raninfo',
+    position: { x: 700, y: -700 },
+    data: {
+      label: 'RAN & Tower',
+      details: [
+        { name: 'BuildPrice', price: '$80k-$100k/tower(rural) and $100k-$120k/tower(urban)' },
+        { name: 'UpgradePrice', price: '$7k-$15k/an' },
+        { name: 'Lease', price: '$20k/tour/year' },
+        { name: '2G', price: '$25k-$35k' },
+        { name: '3G', price: '$25k-$35k' },
+        { name: '4G', price: '$25k-$35k' },
+        { name: '5G', price: '$40k-$50k' },
+      ],
+    },
   },
-},
-
-  
 ];
+
 const edges = [
   {
     id: 'fibre-t1-dc',
     source: 'tower1',
     target: 'datacenter',
-    type: 'bezier', // ✅ ARCS pour Fibre Optic
+    type: 'bezier',
     animated: true,
     label: 'Fibre Optic',
     labelStyle: { fill: 'blue', fontWeight: 'bold', fontSize: 12 },
@@ -154,7 +144,7 @@ const edges = [
     id: 'fibre-t2-dc',
     source: 'tower2',
     target: 'datacenter',
-    type: 'bezier', // ✅ ARCS pour Fibre Optic
+    type: 'bezier',
     animated: true,
     label: 'Fibre Optic',
     labelStyle: { fill: 'blue', fontWeight: 'bold', fontSize: 12 },
@@ -174,7 +164,7 @@ const edges = [
     id: 'radio-t1-t2',
     source: 'tower1',
     target: 'tower2',
-    type: 'bezier', // ✅ ARCS pour Radio Link
+    type: 'bezier',
     animated: true,
     label: 'Radio Link ➔',
     labelStyle: { fill: 'yellow', fontWeight: 'bold', fontSize: 12 },
@@ -194,7 +184,7 @@ const edges = [
     id: 'radio-t2-t1',
     source: 'tower2',
     target: 'tower1',
-    type: 'bezier', // ✅ ARCS pour Radio Link retour
+    type: 'bezier',
     animated: true,
     label: 'Radio Link ⬅',
     labelStyle: { fill: 'black', fontWeight: 'bold', fontSize: 12 },
@@ -214,7 +204,7 @@ const edges = [
     id: 'power-t1-energy',
     source: 'tower1',
     target: 'energy',
-    type: 'step', // ✅ Câble direct reste en ligne droite
+    type: 'step',
     animated: false,
     label: 'Power Cable',
     labelStyle: { fill: 'red', fontWeight: 'bold', fontSize: 12 },
@@ -227,26 +217,6 @@ const edges = [
       color: '#28a745',
     },
   },
-  {
-    id: 'power-t2-energy2',
-    source: 'tower2',
-    target: 'energy2',
-    type: 'step', // ✅ idem ici
-    animated: false,
-    label: 'Power Cable',
-    labelStyle: { fill: 'green', fontWeight: 'bold', fontSize: 12 },
-    style: {
-      stroke: '#28a745',
-      strokeWidth: 3,
-    },
-    markerEnd: {
-      type: MarkerType.ArrowClosed,
-      color: '#28a745',
-    },
-  },
-];
-
-[
   {
     id: 'power-t2-energy2',
     source: 'tower2',
@@ -271,7 +241,7 @@ export default function NetworkMap() {
     <div style={{
       width: '100%',
       height: '1000px',
-      backgroundImage: 'url("/background4.png")', // ✅ ton fichier image
+      backgroundImage: 'url("/background4.png")',
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
@@ -283,7 +253,7 @@ export default function NetworkMap() {
         edgeTypes={{ custom: CustomEdge }}
         fitView
       >
-        <Background color="transparent" /> {/* optionnel : le quadrillage devient transparent */}
+        <Background color="transparent" />
         <Controls />
       </ReactFlow>
     </div>
