@@ -73,19 +73,19 @@ const nodes = [
   {
     id: 'tower1',
     type: 'tower',
-    position: { x: -350, y: -700 },
+    position: { x: -150, y: -1000 },
     data: { label: 'RAN Tower 1', image: '/tower3.png.jpg' },
   },
   {
     id: 'tower2',
     type: 'tower',
-    position: { x:1400, y: -680 },
+    position: { x:2000, y: -1000 },
     data: { label: 'RAN Tower 2', image: '/tower3.png.jpg' },
   },
   {
     id: 'datacenter',
     type: 'datacenter',
-    position: { x: 900, y: 200 },
+    position: { x: 900, y: 100 },
     data: { label: 'Data Center', image: '/datacenter3.png.jpg' },
   },
   {
