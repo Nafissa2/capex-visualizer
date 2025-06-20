@@ -12,6 +12,8 @@ export default function TowerNode({ data }) {
       background: '#0C154B',
       border: '1px solid black',
       borderRadius: 8,
+      width: 200,     // ✅ Largeur fixe du conteneur
+      height: 200,    // ✅ Hauteur fixe du conteneur
     }}>
       <div style={{
         fontWeight: 'bold',
@@ -23,7 +25,15 @@ export default function TowerNode({ data }) {
       }}>
         {data.label}
       </div>
-      <img src={data.image} alt="Tower" style={{ width: 500 }} />
+      <img 
+        src={data.image} 
+        alt="Tower" 
+        style={{ 
+          width: '100%',   // ✅ Prend toute la largeur du conteneur
+          height: '100%',  // ✅ Prend toute la hauteur
+          objectFit: 'contain'  // ✅ Ne déforme pas l’image
+        }} 
+      />
       <Handle type="source" position={Position.Right} style={{ background: '#0C154B' }} />
       <Handle type="target" position={Position.Left} style={{ background: '#0C154B' }} />
     </div>
