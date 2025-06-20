@@ -4,7 +4,7 @@ import { Handle, Position } from 'reactflow';
 export default function TowerNode({ data }) {
   return (
     <div
-      tabIndex={-1} // 🔑 désactive focus
+      tabIndex={-1}
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -16,19 +16,20 @@ export default function TowerNode({ data }) {
         outline: 'none',
       }}
     >
-      <img
-        src={data.image}
-        alt="Tower"
-        style={{
-          width: '2000px',  // ✅ Ici tu ajustes la taille à volonté (ex: 250px, 300px, 400px)
-          height: 'auto',  // ✅ Préserve le ratio
-          border: 'none',
-          outline: 'none',
-          userSelect: 'none',
-          display: 'block',
-        }}
-        draggable={false}
-      />
+      {/* ✅ CONTENEUR FIXE */}
+      <div style={{ width: '250px' }}>
+        <img
+          src={data.image}
+          alt="Tower"
+          style={{
+            width: '100%',
+            height: 'auto',
+            display: 'block',
+            userSelect: 'none',
+          }}
+          draggable={false}
+        />
+      </div>
 
       <Handle
         type="source"
