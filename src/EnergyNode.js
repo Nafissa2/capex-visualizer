@@ -8,21 +8,12 @@ export default function EnergyNode({ data }) {
       flexDirection: 'column',
       alignItems: 'center',
       position: 'relative',
-      padding: 10,
-      background: '#fff',
-      border: '1px solid black',
-      borderRadius: 8,
+      padding: 0,             // ✅ plus de padding
+      background: 'transparent', // ✅ plus de fond blanc
+      border: 'none',         // ✅ pas de bordure
+      borderRadius: 0,        // ✅ pas d'arrondi
     }}>
-      <div style={{
-        fontWeight: 'bold',
-        marginBottom: 5,
-        background: '#f0f0f0',
-        padding: '2px 6px',
-        borderRadius: 4
-      }}>
-        {data.label}
-      </div>
-      <img src={data.image} alt="Energy" style={{ width: 150 }} />
+      <img src={data.image} alt="Energy" style={{ width: 200 }} />
       <Handle type="source" position={Position.Right} style={{ background: '#555' }} />
       <Handle type="target" position={Position.Left} style={{ background: '#555' }} />
     </div>

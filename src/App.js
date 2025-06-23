@@ -5,43 +5,54 @@ import ResultTable from './ResultTable';
 
 export default function App() {
   const [answers, setAnswers] = useState({});
-  const [mode, setMode] = useState('map'); // 'map' | 'qcm' | 'result' | 'continueRan' | 'ran'
-
+  const [mode, setMode] = useState('map');
   const [ranQuestions, setRanQuestions] = useState([]);
 
   const handleFinishQCM = (finalAnswers) => {
-    // Si c’est juste Tours : passer en mode résultat Tours + bouton Continue
-    if (!finalAnswers.ran2GStart) {
-      setAnswers(finalAnswers);
-      setMode('continueRan');
-    } else {
-      // Si c’est après RAN : résultat final
-      setAnswers(finalAnswers);
-      setMode('result');
-    }
+    setAnswers(finalAnswers);
+    setMode('continueRan');
   };
+
   const handleContinueRan = () => {
-    // Liste fixe pour le bloc RAN + RAN Upgrade
     const ranQ = [
-      { question: "Êtes-vous en situation Greenfield ?", key: "greenField", options: ["Oui", "Non"] },
-      { question: "Combien de sites 2G au départ ?", key: "ran2GStart", type: "number" },
-      { question: "Combien de sites 3G au départ ?", key: "ran3GStart", type: "number" },
-      { question: "Combien de sites 4G au départ ?", key: "ran4GStart", type: "number" },
-      { question: "Combien de sites 5G au départ ?", key: "ran5GStart", type: "number" },
-      { question: "Quel est le nombre total de tours en fin de Business Plan ?", key: "totalSitesEnd", type: "number" },
-      { question: "Quel % de ce total pour 2G ?", key: "ran2GTargetPct", type: "number" },
-      { question: "Quel % de ce total pour 3G ?", key: "ran3GTargetPct", type: "number" },
-      { question: "Quel % de ce total pour 4G ?", key: "ran4GTargetPct", type: "number" },
-      { question: "Quel % de ce total pour 5G ?", key: "ran5GTargetPct", type: "number" },
+      { question: "Are you in a Greenfield situation?", key: "greenField", options: ["Yes", "No"] },
+      { question: "How many 2G sites initially?", key: "ran2GStart", type: "number" },
+      { question: "How many 3G sites initially?", key: "ran3GStart", type: "number" },
+      { question: "How many 4G sites initially?", key: "ran4GStart", type: "number" },
+      { question: "How many 5G sites initially?", key: "ran5GStart", type: "number" },
+      { question: "What is the total number of sites at the end of the Business Plan?", key: "totalSitesEnd", type: "number" },
+      { question: "What % of this total for 2G?", key: "ran2GTargetPct", type: "number" },
+      { question: "What % of this total for 3G?", key: "ran3GTargetPct", type: "number" },
+      { question: "What % of this total for 4G?", key: "ran4GTargetPct", type: "number" },
+      { question: "What % of this total for 5G?", key: "ran5GTargetPct", type: "number" },
+      { question: "What is the unit price for RAN 2G?", key: "ran2GUnitPrice", type: "number" },
+      { question: "What is the unit price for RAN 3G?", key: "ran3GUnitPrice", type: "number" },
+      { question: "What is the unit price for RAN 4G?", key: "ran4GUnitPrice", type: "number" },
+      { question: "What is the unit price for RAN 5G?", key: "ran5GUnitPrice", type: "number" },
+      { question: "What is the unit price for RAN Upgrade?", key: "ranUpgradeUnitPrice", type: "number" },
     ];
-  
+    
+    
     setRanQuestions(ranQ);
-    setMode('ran');
+  // utilise un micro-retard pour garantir le rendu après mise à jour
+  setTimeout(() => setMode('ran'), 0);
+    
   };
-  
 
   return (
-    <div className="container">
+    <div className="container" style={{ position: 'relative' }}>
+    {/* ✅ Ton logo global */}
+    <img 
+      src="/logo_axian.png"  // Chemin vers ton fichier dans public/
+      alt="Logo"
+      style={{
+        position: 'absolute',
+        top: '10px',
+        right: '20px',
+        height: '60px', // adapte la taille si besoin
+        zIndex: 9999
+      }}
+    />
       <h1
         style={{
           margin: 0,
@@ -53,10 +64,10 @@ export default function App() {
           textAlign: 'center',
         }}
       >
-        CAPEX Network Map
+        CAPEX Network Map Simulation
       </h1>
 
-      <div style={{ flex: 1, height: '100%' }}>
+      <div style={{ flex: 1, height: '100%', overflowY: 'auto' }}>
         {mode === 'map' && (
           <>
             <NetworkMap />
@@ -64,14 +75,14 @@ export default function App() {
               onClick={() => setMode('qcm')}
               style={{
                 position: 'absolute',
-                top: '20px',
+                top: '700px',
                 right: '40px',
                 zIndex: 20,
                 padding: '10px 20px',
                 fontSize: '18px',
                 cursor: 'pointer',
-                backgroundColor: '#091C53',
-                color:'#F3F4F6',
+                backgroundColor: '#D31B64',
+                color: '#F3F4F6',
                 fontWeight: 'bold',
               }}
             >
@@ -81,18 +92,18 @@ export default function App() {
         )}
 
         {mode === 'qcm' && (
-          <Questionnaire
-            onFinish={handleFinishQCM}
-          />
+          <Questionnaire onFinish={handleFinishQCM} />
         )}
 
         {mode === 'continueRan' && (
-          <div style={{ textAlign: 'center', marginTop: '40px' }}>
+          <div style={{ textAlign: 'center', marginTop: '40px', paddingBottom: '80px' }}>
             <ResultTable answers={answers} />
+
             <button
               onClick={handleContinueRan}
               style={{
                 marginTop: '20px',
+                marginRight: '10px',
                 padding: '10px 20px',
                 fontSize: '18px',
                 cursor: 'pointer',
@@ -101,18 +112,28 @@ export default function App() {
             >
               Continue vers RAN
             </button>
+
+            {/* ✅ SUPPRIMÉ : le bouton rose inutile */}
           </div>
         )}
 
-        {mode === 'ran' && (
-          <Questionnaire
-            questions={ranQuestions}
-            onFinish={(ranAnswers) => handleFinishQCM({ ...answers, ...ranAnswers })}
-          />
-        )}
+{mode === 'ran' && (
+  <Questionnaire
+    questions={ranQuestions}
+    dynamicMode={false}   // ✅ on désactive la logique dynamique pour RAN
+    onFinish={(ranAnswers) => {
+      setAnswers({ ...answers, ...ranAnswers });
+      setMode('result');
+    }}
+  />
+)}
+
 
         {mode === 'result' && (
-          <ResultTable answers={answers} />
+          <div style={{ textAlign: 'center', marginTop: '40px', paddingBottom: '80px' }}>
+            <ResultTable answers={answers} />
+            {/* ✅ SUPPRIMÉ : le bouton rose inutile */}
+          </div>
         )}
       </div>
     </div>

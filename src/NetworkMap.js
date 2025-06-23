@@ -5,7 +5,7 @@ import FiberInfoBox from './FiberInfoBox';
 import DataCenterInfoBox from './DataCenterInfoBox';
 import EnergyInfoBox from './EnergyInfoBox';
 import TowerInfoBox from './TowerInfoBox';
-
+import CustomWaveEdge from './CustomWaveEdge';
 import ReactFlow, {
   Background,
   Controls,
@@ -30,59 +30,20 @@ const nodeTypes = {
 };
 
 const edges = [
-  {
-    id: 'fibre-t1-dc',
-    source: 'tower1',
-    target: 'datacenter',
-    type: 'bezier',
-    animated: true,
-    label: 'Fibre Optic',
-    labelStyle: { fill: 'blue', fontWeight: 'bold', fontSize: 12 },
-    sourcePosition: 'right',
-    targetPosition: 'left',
-    style: {
-      stroke: '#007bff',
-      strokeWidth: 7,
-      strokeDasharray: '8 4',
-    },
-    markerEnd: {
-      type: MarkerType.ArrowClosed,
-      color: '#007bff',
-    },
-  },
-  {
-    id: 'fibre-t2-dc',
-    source: 'tower2',
-    target: 'datacenter',
-    type: 'bezier',
-    animated: true,
-    label: 'Fibre Optic',
-    labelStyle: { fill: 'blue', fontWeight: 'bold', fontSize: 12 },
-    sourcePosition: 'left',
-    targetPosition: 'right',
-    style: {
-      stroke: '#007bff',
-      strokeWidth: 7,
-      strokeDasharray: '8 4',
-    },
-    markerEnd: {
-      type: MarkerType.ArrowClosed,
-      color: '#007bff',
-    },
-  },
+
   {
     id: 'radio-t1-t2',
     source: 'tower1',
     target: 'tower2',
-    type: 'bezier',
+    type: 'customWave',
     animated: true,
     label: 'Radio Link ➔',
     labelStyle: { fill: 'yellow', fontWeight: 'bold', fontSize: 12 },
     sourcePosition: 'bottom',
     targetPosition: 'bottom',
     style: {
-      stroke: 'yellow',
-      strokeWidth: 6,
+      stroke: '#E0135C',
+      strokeWidth: 4,
       strokeDasharray: '2 1',
     },
     markerEnd: {
@@ -90,26 +51,7 @@ const edges = [
       color: 'gray',
     },
   },
-  {
-    id: 'radio-t2-t1',
-    source: 'tower2',
-    target: 'tower1',
-    type: 'bezier',
-    animated: true,
-    label: 'Radio Link ⬅',
-    labelStyle: { fill: 'black', fontWeight: 'bold', fontSize: 12 },
-    sourcePosition: 'top',
-    targetPosition: 'top',
-    style: {
-      stroke: 'red',
-      strokeWidth: 6,
-      strokeDasharray: '2 1',
-    },
-    markerEnd: {
-      type: MarkerType.ArrowClosed,
-      color: 'gray',
-    },
-  },
+
   {
     id: 'power-t1-energy',
     source: 'tower1',
@@ -119,12 +61,12 @@ const edges = [
     label: 'Power Cable',
     labelStyle: { fill: 'red', fontWeight: 'bold', fontSize: 12 },
     style: {
-      stroke: '#28a745',
+      stroke: '#32CCD6',
       strokeWidth: 3,
     },
     markerEnd: {
       type: MarkerType.ArrowClosed,
-      color: '#28a745',
+      color: '#32CCD6',
     },
   },
   {
@@ -136,12 +78,12 @@ const edges = [
     label: 'Power Cable',
     labelStyle: { fill: 'green', fontWeight: 'bold', fontSize: 12 },
     style: {
-      stroke: '#28a745',
+      stroke: '#32CCD6',
       strokeWidth: 3,
     },
     markerEnd: {
       type: MarkerType.ArrowClosed,
-      color: '#28a745',
+      color: '#32CCD6',
     },
   },
 ];
@@ -153,7 +95,7 @@ export default function NetworkMap() {
     {
       id: 'fiber-info',
       type: 'fiberinfo',
-      position: { x: 675, y: 250 },
+      position: { x: 100, y: 450 },
       data: {
         label: 'FIBER',
         details: [
@@ -167,9 +109,9 @@ export default function NetworkMap() {
     {
       id: 'datacenter-info',
       type: 'datacenterinfo',
-      position: { x: 0, y: 0 },
+      position: { x: 1000, y: 415},
       data: {
-        label: 'Data Center',
+        label: 'DATA CENTER',
         details: [
           { name: 'Total Data-center', price: '$10k-$20k' },
           { name: 'Core Network - Internet', price: '$1-2/Subs/an' },
@@ -184,48 +126,48 @@ export default function NetworkMap() {
     {
       id: 'energy-info',
       type: 'energyinfo',
-      position: { x: 550, y: 0 },
+      position: { x: 300, y: 300 },
       data: {
-        label: 'Energy',
+        label: 'ENERGY',
         price: '$10k-$25k',
       },
     },
     {
       id: 'tower1',
       type: 'tower',
-      position: { x: -150, y: -1000 },
-      data: { label: 'RAN Tower 1', image: '/tower3.png.jpg' },
+      position: { x: 100, y: -85 },
+      data: { label: '', image: '/tower3.png.jpg' },
     },
     {
       id: 'tower2',
       type: 'tower',
-      position: { x: 2000, y: -1000 },
-      data: { label: 'RAN Tower 2', image: '/tower3.png.jpg' },
+      position: { x: 850, y: -85 },
+      data: { label: '', image: '/tower3.png.jpg' },
     },
     {
       id: 'datacenter',
       type: 'datacenter',
-      position: { x: 900, y: 100 },
+      position: { x: 500, y: 400 },
       data: { label: 'Data Center', image: '/datacenter3.png.jpg' },
     },
     {
       id: 'energy',
       type: 'energy',
-      position: { x: 700, y: -100 },
-      data: { label: 'Energy Unit', image: '/energy.png' },
+      position: { x: 100, y: 260 },
+      data: { label: 'Energy Unit', image: '/energy2.png' },
     },
     {
       id: 'energy2',
       type: 'energy',
-      position: { x: 2950, y: -150 },
-      data: { label: 'Energy Unit', image: '/energy.png' },
+      position: { x: 1050, y: 260 },
+      data: { label: 'Energy Unit', image: '/energy2.png' },
     },
     {
       id: 'ran-info',
       type: 'raninfo',
-      position: { x: 700, y: -700 },
+      position: { x: 575, y: 7 },
       data: {
-        label: 'RAN & Tower',
+        label: 'RAN & TOWER',
         details: [
           { name: 'BuildPrice', price: '$80k-$100k/tower(rural) and $100k-$120k/tower(urban)' },
           { name: 'UpgradePrice', price: '$7k-$15k/an' },
@@ -240,26 +182,20 @@ export default function NetworkMap() {
   ]);
 
   return (
-    <div style={{ width: '100%', height: '1000px' }}>
-      <button
-        style={{ margin: 10, padding: '8px 12px', fontWeight: 'bold' }}
-        onClick={() => {
-          setNodes(prev =>
-            prev.map(node =>
-              node.id === 'tower1'
-                ? { ...node, position: { x: 500, y: -500 } }
-                : node
-            )
-          );
-        }}
-      >
-        Déplacer Tower1 🚀
-      </button>
+    <div style={{
+      width: '100%',
+      height: '1000px',
+      backgroundImage: 'url("/background4.png")',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+     
+    }}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
-        edgeTypes={{ custom: CustomEdge }}
+        edgeTypes={{ custom: CustomEdge, customWave: CustomWaveEdge }}
       >
         <Background color="transparent" />
         <Controls />

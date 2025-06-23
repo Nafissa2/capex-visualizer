@@ -7,10 +7,10 @@ export default function DataCenterNode({ data }) {
       tabIndex={-1}
       style={{
         position: 'relative',
-        background: 'transparent', // ✅ plus de fond parasite
-        border: 'none',            // ✅ plus de contour
+        background: 'transparent',
+        border: 'none',
         borderRadius: 8,
-        padding: 0,                // ✅ pas de padding autour
+        padding: 0,
         outline: 'none',
         textAlign: 'center',
       }}
@@ -19,7 +19,7 @@ export default function DataCenterNode({ data }) {
         src={data.image}
         alt="DC"
         style={{
-          width: '700px', // ✅ Ajuste ici la taille finale de ton DataCenter
+          width: '500px',
           height: 'auto',
           display: 'block',
           border: 'none',
@@ -29,33 +29,50 @@ export default function DataCenterNode({ data }) {
         draggable={false}
       />
 
+      {/* ✅ TARGET gauche */}
       <Handle
         type="target"
         position={Position.Left}
         style={{
-          position: 'absolute',
-          top: '50%',
-          left: -8,
-          transform: 'translateY(-50%)',
           background: '#0C154B',
           width: 10,
           height: 10,
         }}
       />
 
+      {/* ✅ TARGET droite */}
       <Handle
         type="target"
         position={Position.Right}
         style={{
-          position: 'absolute',
-          top: '50%',
-          right: -8,
-          transform: 'translateY(-50%)',
           background: '#0C154B',
           width: 10,
           height: 10,
         }}
       />
+
+      {/* ✅ SOURCE gauche */}
+      <Handle
+        type="source"
+        position={Position.Left}
+        style={{
+          background: '#0C154B',
+          width: 10,
+          height: 10,
+        }}
+      />
+
+      {/* ✅ SOURCE droite */}
+      <Handle
+        type="source"
+        position={Position.Right}
+        style={{
+          background: '#0C154B',
+          width: 10,
+          height: 10,
+        }}
+      />
+
     </div>
   );
 }

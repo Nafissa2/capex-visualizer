@@ -9,9 +9,9 @@ export default function EnergyInfoBox({ data }) {
       <div
         onClick={() => setOpen(!open)}
         style={{
-          width: 120,
-          height: 60,
-          background: '#28a745',
+          width: 130,
+          height: 45,
+          background: '#9B395C',
           color: '#fff',
           display: 'flex',
           alignItems: 'center',
@@ -20,7 +20,7 @@ export default function EnergyInfoBox({ data }) {
           cursor: 'pointer',
           userSelect: 'none',
           fontWeight: 'bold',
-          fontSize: 30,
+          fontSize: 25,
         }}
       >
         {data.label}

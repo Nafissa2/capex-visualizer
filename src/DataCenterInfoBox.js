@@ -9,9 +9,9 @@ export default function DataCenterInfoBox({ data }) {
       <div
         onClick={() => setOpen(!open)}
         style={{
-          width: 250,
-          height: 70,
-          background: '#E21266',
+          width: 230,
+          height: 45,
+          background: '#304E98',
           color: '#fff',
           display: 'flex',
           alignItems: 'center',
@@ -20,7 +20,7 @@ export default function DataCenterInfoBox({ data }) {
           cursor: 'pointer',
           userSelect: 'none',
           fontWeight: 'bold',
-          fontSize: 32,
+          fontSize: 25,
         }}
       >
         {data.label}

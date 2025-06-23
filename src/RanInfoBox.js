@@ -9,9 +9,9 @@ export default function RanInfoBox({ data }) {
       <div
         onClick={() => setOpen(!open)}
         style={{
-          width: 200,
-          height: 60,
-          background: '#007bff',
+          width: 220,
+          height: 40,
+          background: '#C14F78',
           color: '#fff',
           display: 'flex',
           alignItems: 'center',
@@ -20,7 +20,7 @@ export default function RanInfoBox({ data }) {
           cursor: 'pointer',
           userSelect: 'none',
           fontWeight: 'bold',
-          fontSize: 30,
+          fontSize: 25,
         }}
       >
         {data.label}

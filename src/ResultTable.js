@@ -9,6 +9,12 @@ const formatNumber = (n) => Math.round(n).toLocaleString('en-US');
   const start = parseInt(answers.startYear);
   const duration = parseInt(answers.durationYears);
   const fy = Array.from({ length: duration }, (_, i) => `FY${String(start + i).slice(-2)}`);
+// ✅ Pour afficher proprement un input utilisateur ou vide
+const getInputValue = (key, condition = true) => {
+  if (!condition) return "";
+  const v = answers[key];
+  return (v === undefined || v === null || v === '') ? "" : v;
+};
 
   // Lease
   const lease = [];
@@ -82,10 +88,11 @@ const buildRuralPctArray = fy.map((_, i) => {
   const buildRural = build.map(n => n * ruralPctBuild);
 
   // Prix unitaires
- const leasePriceUrban = 25;  // USDk
- const leasePriceRural = 15;  // USDk
- const buildPriceUrban = 120; // USDk
- const buildPriceRural = 80;  // USDk
+  const leasePriceUrban = parseFloat(answers.leasePriceUrban) || 0;
+  const leasePriceRural = parseFloat(answers.leasePriceRural) || 0;
+  const buildPriceUrban = parseFloat(answers.buildPriceUrban) || 0;
+  const buildPriceRural = parseFloat(answers.buildPriceRural) || 0;
+  
 
 
   // Nouveau Total Cost basé sur Urban/Rural
@@ -159,17 +166,32 @@ const finalTotal = total.map((val, i) => val + customDuty[i]);
   }
   
   
-const newRan234 = [ran2G[0] + ran3G[0] + ran4G[0]];
-const newRan5G = [ran5G[0]];
-for (let i = 1; i < fy.length; i++) {
-  newRan234[i] = (ran2G[i] - ran2G[i-1]) + (ran3G[i] - ran3G[i-1]) + (ran4G[i] - ran4G[i-1]);
-  newRan5G[i] = ran5G[i] - ran5G[i-1];
-}
-const ran234UnitPrice = 50; // USDk
-const ran5GUnitPrice = 100; // USDk
+  const newRan2G = [ran2G[0]];
+  const newRan3G = [ran3G[0]];
+  const newRan4G = [ran4G[0]];
+  const newRan5G = [ran5G[0]];
+  
+  for (let i = 1; i < fy.length; i++) {
+    newRan2G[i] = ran2G[i] - ran2G[i-1];
+    newRan3G[i] = ran3G[i] - ran3G[i-1];
+    newRan4G[i] = ran4G[i] - ran4G[i-1];
+    newRan5G[i] = ran5G[i] - ran5G[i-1];
+  }
+  
+const ran2GUnitPrice = parseFloat(answers.ran2GUnitPrice) || 0;
+const ran3GUnitPrice = parseFloat(answers.ran3GUnitPrice) || 0;
+const ran4GUnitPrice = parseFloat(answers.ran4GUnitPrice) || 0;
+const ran5GUnitPrice = parseFloat(answers.ran5GUnitPrice) || 0;
+
+
+
 const totalCapexRAN = fy.map((_, i) =>
-  newRan234[i] * ran234UnitPrice + newRan5G[i] * ran5GUnitPrice
+  newRan2G[i] * ran2GUnitPrice +
+  newRan3G[i] * ran3GUnitPrice +
+  newRan4G[i] * ran4GUnitPrice +
+  newRan5G[i] * ran5GUnitPrice
 );
+
 // === TOWER UPGRADES ===
 
 // Exemple : tableau de % d'upgrades des tours (0 pour les années sans upgrade)
@@ -199,7 +221,7 @@ const towerUpgradeUnits = fy.map((_, i) =>
 );
 
 // Prix unitaire fixe
-const towerUpgradeUnitPrice = 30; // USDk
+const towerUpgradeUnitPrice = parseFloat(answers.towerUpgradeUnitPrice) || 0;
 
 // Capex total
 const towerUpgradeCapex = towerUpgradeUnits.map(n => n * towerUpgradeUnitPrice);
@@ -214,7 +236,7 @@ const ranUpgradeUnits = fy.map((_, i) =>
 );
 
 // Prix unitaire fixe
-const ranUpgradeUnitPrice = 20; // USDk
+const ranUpgradeUnitPrice = parseFloat(answers.ranUpgradeUnitPrice) || 0;
 
 // Capex total
 const ranUpgradeCapex = ranUpgradeUnits.map(n => n * ranUpgradeUnitPrice);
@@ -240,7 +262,7 @@ const towerUpgradeCustomDuty = towerUpgradeCapex.map(val => val * customDutyPct)
 
   // Export Excel
   const exportToExcel = () => {
-    const header = ["Ligne", "Unité", ...fy];
+    const header = ["Ligne", "Unit", ...fy];
     const rows = [
       ["New Lease Towers", "#", ...leaseAdditions],
       ["Total Lease Towers", "#", ...lease],
@@ -275,9 +297,7 @@ const towerUpgradeCustomDuty = towerUpgradeCapex.map(val => val * customDutyPct)
         ["RAN 3G Sites", "#", ...ran3G],
         ["RAN 4G Sites", "#", ...ran4G],
         ["RAN 5G Sites", "#", ...ran5G],
-        ["New RAN PoP (2G, 3G, 4G)", "#", ...newRan234],
         ["New RAN PoP (5G)", "#", ...newRan5G],
-        ["Unit Price RAN (2G, 3G, 4G)", "USDk", ...Array(fy.length).fill(ran234UnitPrice)],
         ["Unit Price RAN (5G)", "USDk", ...Array(fy.length).fill(ran5GUnitPrice)],
         ["Total Capex RAN", "USDk", ...totalCapexRAN],
     
@@ -296,22 +316,31 @@ const towerUpgradeCustomDuty = towerUpgradeCapex.map(val => val * customDutyPct)
         ["RAN 3G Sites", "#", ...ran3G],
         ["RAN 4G Sites", "#", ...ran4G],
         ["RAN 5G Sites", "#", ...ran5G],
-        ["New RAN PoP (2G, 3G, 4G)", "#", ...newRan234],
         ["New RAN PoP (5G)", "#", ...newRan5G],
-        ["Unit Price RAN (2G, 3G, 4G)", "USDk", ...Array(fy.length).fill(ran234UnitPrice)],
         ["Unit Price RAN (5G)", "USDk", ...Array(fy.length).fill(ran5GUnitPrice)],
         ["Total Capex RAN (Without Duty)", "USDk", ...totalCapexRAN],
         ["Custom Duty RAN", "USDk", ...ranCustomDuty],
         ["Custom Duty RAN %", "%", ...ranCustomDutyPctArray],
         ["Total Capex RAN + Duty", "USDk", ...totalCapexRANWithDuty],
-      
+        ["New RAN 2G PoP", "#", ...newRan2G],
+        ["Unit Price RAN 2G", "USDk", ...Array(fy.length).fill(ran2GUnitPrice)],
+        
+        ["New RAN 3G PoP", "#", ...newRan3G],
+        ["Unit Price RAN 3G", "USDk", ...Array(fy.length).fill(ran3GUnitPrice)],
+        
+        ["New RAN 4G PoP", "#", ...newRan4G],
+        ["Unit Price RAN 4G", "USDk", ...Array(fy.length).fill(ran4GUnitPrice)],
+        
+        ["New RAN 5G PoP", "#", ...newRan5G],
+        ["Unit Price RAN 5G", "USDk", ...Array(fy.length).fill(ran5GUnitPrice)],
+        
         ["RAN Upgrades Units", "#", ...ranUpgradeUnits],
         ["Unit Price RAN Upgrade", "USDk", ...Array(fy.length).fill(ranUpgradeUnitPrice)],
         ["Total Capex RAN Upgrade", "USDk", ...ranUpgradeCapex],
         ["Total Capex RAN + Duty + Upgrade", "USDk", ...totalCapexRANWithDutyAndUpgrade],
         ["Custom Duty RAN (Base)", "USDk", ...ranCustomDuty],
-["Custom Duty RAN Upgrade", "USDk", ...ranUpgradeCustomDuty],
-["Custom Duty Tower Upgrade", "USDk", ...towerUpgradeCustomDuty],
+        ["Custom Duty RAN Upgrade", "USDk", ...ranUpgradeCustomDuty],
+        ["Custom Duty Tower Upgrade", "USDk", ...towerUpgradeCustomDuty],
 
         
       );
@@ -328,7 +357,7 @@ const towerUpgradeCustomDuty = towerUpgradeCapex.map(val => val * customDutyPct)
   };
 
   return (
-    <div style={{ textAlign: 'center', marginTop: '40px' }}>
+    <div style={{ textAlign: 'right', marginTop: '40px' }}>
    <table
   border="1"
   style={{
@@ -340,189 +369,220 @@ const towerUpgradeCustomDuty = towerUpgradeCapex.map(val => val * customDutyPct)
   }}
 >
 
-        <thead>
-          <tr>
-            <th style={{ padding: '10px' }}>Item</th>
-            <th style={{ padding: '10px' }}>Unité</th>
-            {fy.map(y => <th key={y} style={{ padding: '10px' }}>{y}</th>)}
-          </tr>
-        </thead>
+<thead>
+  <tr>
+    <th style={{ padding: '10px' }}>Item</th>
+    <th style={{ padding: '10px' }}>Unité</th>
+    <th style={{ padding: '10px' }}>Input</th>  {/* ✅ NOUVELLE COLONNE */}
+    {fy.map(y => <th key={y} style={{ padding: '10px' }}>{y}</th>)}
+  </tr>
+</thead>
+
         <tbody>
   {/* Ligne vide */}
   <tr>
-    <td colSpan={fy.length + 2}>&nbsp;</td>
+    <td colSpan={fy.length + 3}>&nbsp;</td>
   </tr>
 
   {/* LEASE SECTION */}
   <tr>
-    <td colSpan={fy.length + 2} style={{ fontWeight: 'bold', backgroundColor: '#E70E5B', color: '#F5F5F5', textAlign: 'center' }}>
+    <td colSpan={fy.length + 3} style={{ fontWeight: 'bold', backgroundColor: '#E70E5B', color: '#F5F5F5', textAlign: 'center' }}>
       LEASE SECTION
     </td>
     </tr>
      {/* Ligne vide */}
  <tr>
-    <td colSpan={fy.length + 2}>&nbsp;</td>
+    <td colSpan={fy.length + 3}>&nbsp;</td>
   </tr>
 
 
   <tr>
     <td>New Lease Towers</td><td>#</td>
+    <td></td>  {/* Vide */}
     {leaseAdditions.map((n, i) => <td key={i}>{formatNumber(n)}</td>)}
   </tr>
 
   <tr>
     <td>Urban %</td><td>%</td>
+    <td
+  style={{
+    background: getInputValue('percentUrbanLease') ? '#E0F0FF' : 'transparent',
+    color: getInputValue('percentUrbanLease') ? '#0F1942' : 'inherit'
+  }}
+>
+  {getInputValue('percentUrbanLease')}
+</td>
+
     {leaseUrbanPctArray.map((p, i) => <td key={i}>{p}</td>)}
   </tr>
 
   <tr>
     <td>Rural %</td><td>%</td>
+    <td>{getInputValue('RuralPercent')}</td>
     {leaseRuralPctArray.map((p, i) => <td key={i}>{p}</td>)}
   </tr>
 
   <tr>
     <td style={{ fontWeight: 'bold' }}>Cumulative Leased Towers</td><td>#</td>
+    <td></td>  {/* Vide */}
     {lease.map((n, i) => <td key={i} style={{ fontWeight: 'bold' }}>{formatNumber(n)}</td>)}
   </tr>
 
   <tr>
     <td>Urban Towers</td><td>#</td>
+    <td></td>  {/* Vide */}
     {leaseUrban.map((n, i) => <td key={i}>{formatNumber(n)}</td>)}
   </tr>
 
   <tr>
     <td>Rural Towers</td><td>#</td>
+    <td></td>  {/* Vide */}
     {leaseRural.map((n, i) => <td key={i}>{formatNumber(n)}</td>)}
   </tr>
 
   <tr>
     <td>Price/Unit (Urban)</td><td>USDk</td>
+    <td>{getInputValue('leasePriceUrban')}</td>
     {Array(fy.length).fill(leasePriceUrban).map((p, i) => <td key={i}>{formatNumber(p)}</td>)}
   </tr>
 
   <tr>
     <td>Price/Unit (Rural)</td><td>USDk</td>
+    <td>{getInputValue('leasePriceRural')}</td>
     {Array(fy.length).fill(leasePriceRural).map((p, i) => <td key={i}>{formatNumber(p)}</td>)}
   </tr>
 
   {/* Ligne vide */}
   <tr>
-    <td colSpan={fy.length + 2}>&nbsp;</td>
+    <td colSpan={fy.length + 3}>&nbsp;</td>
   </tr>
 
   {/* BUILD SECTION */}
   <tr>
-    <td colSpan={fy.length + 2} style={{ fontWeight: 'bold', backgroundColor: '#E70E5B', color: '#F5F5F5', textAlign: 'center' }}>
+    <td colSpan={fy.length + 3} style={{ fontWeight: 'bold', backgroundColor: '#E70E5B', color: '#F5F5F5', textAlign: 'center' }}>
       BUILD SECTION
     </td>
     </tr>
      {/* Ligne vide */}
  <tr>
-    <td colSpan={fy.length + 2}>&nbsp;</td>
+    <td colSpan={fy.length + 3}>&nbsp;</td>
   </tr>
   
 
   <tr>
     <td>New Build Towers</td><td>#</td>
+    <td></td>  {/* Vide */}
     {buildAdditions.map((n, i) => <td key={i}>{formatNumber(n)}</td>)}
   </tr>
 
   <tr>
     <td>Urban %</td><td>%</td>
+    <td>{getInputValue('UrbanPercent')}</td>
     {buildUrbanPctArray.map((p, i) => <td key={i}>{p}</td>)}
   </tr>
 
   <tr>
     <td>Rural %</td><td>%</td>
+    <td>{getInputValue('RuralPercent')}</td>
     {buildRuralPctArray.map((p, i) => <td key={i}>{p}</td>)}
   </tr>
 
   <tr>
     <td style={{ fontWeight: 'bold' }}>Cumulative Owned Towers</td><td>#</td>
+    <td></td>  {/* Vide */}
     {build.map((n, i) => <td key={i} style={{ fontWeight: 'bold' }}>{formatNumber(n)}</td>)}
   </tr>
 
   <tr>
     <td>Urban Towers</td><td>#</td>
+    <td></td>  {/* Vide */}
     {buildUrban.map((n, i) => <td key={i}>{formatNumber(n)}</td>)}
   </tr>
 
   <tr>
     <td>Rural Towers</td><td>#</td>
+    <td></td>  {/* Vide */}
     {buildRural.map((n, i) => <td key={i}>{formatNumber(n)}</td>)}
   </tr>
 
   <tr>
     <td>Price/Unit (Urban)</td><td>USDk</td>
+    <td>{getInputValue('BuildPriceUrban')}</td>
     {Array(fy.length).fill(buildPriceUrban).map((p, i) => <td key={i}>{formatNumber(p)}</td>)}
   </tr>
 
   <tr>
     <td>Price/Unit (Rural)</td><td>USDk</td>
+    <td>{getInputValue('BuildPriceRural')}</td>
     {Array(fy.length).fill(buildPriceRural).map((p, i) => <td key={i}>{formatNumber(p)}</td>)}
   </tr>
 
   {/* Ligne vide */}
   <tr>
-    <td colSpan={fy.length + 2}>&nbsp;</td>
+    <td colSpan={fy.length + 3}>&nbsp;</td>
   </tr>
 
   {/* TOTAL TOWERS */}
   <tr>
     <td style={{ fontWeight: 'bold' }}>Total Towers (Owned + Leased)</td><td>#</td>
+    <td></td>  {/* Vide */}
     {build.map((b, i) => (
       <td key={i} style={{ fontWeight: 'bold' }}>{formatNumber(b + lease[i])}</td>
     ))}
   </tr>
  {/* Ligne vide */}
  <tr>
-    <td colSpan={fy.length + 2}>&nbsp;</td>
+    <td colSpan={fy.length + 3}>&nbsp;</td>
   </tr>
   {/* TOTAL TOWER CAPEX */}
   <tr style={{ fontWeight: 'bold', backgroundColor: '#F8DADA' }}>
     <td>Total Tower Capex</td><td>USDk</td>
+    <td></td>  {/* Vide */}
     {total.map((v, i) => <td key={i}>{formatNumber(v)}</td>)}
   </tr>
 
   {/* Ligne vide */}
   <tr>
-    <td colSpan={fy.length + 2}>&nbsp;</td>
+    <td colSpan={fy.length + 3}>&nbsp;</td>
   </tr>
 
   <tr>
     <td>Custom Duty %</td><td>%</td>
+    <td>{getInputValue('CustomDutyPercent')}</td>
     {customDutyPctArray.map((p, i) => <td key={i}>{p}</td>)}
   </tr>
 
   <tr>
     <td>Custom Duty</td><td>USDk</td>
+    <td></td>  {/* Vide */}
     {customDuty.map((v, i) => <td key={i}>{formatNumber(v)}</td>)}
   </tr>
 
   {/* Ligne vide */}
   <tr>
-    <td colSpan={fy.length + 2}>&nbsp;</td>
+    <td colSpan={fy.length + 3}>&nbsp;</td>
   </tr>
 
   <tr style={{ fontWeight: 'bold', backgroundColor: '#F8DADA' }}>
   <td>Total Tower Capex + Duty</td><td>USDk</td>
+  <td></td>  {/* Vide */}
   {totalTowerCapexWithDuty.map((v, i) => <td key={i}>{formatNumber(v)}</td>)}
 </tr>
   {/* Ligne vide */}
   <tr>
-    <td colSpan={fy.length + 2}>&nbsp;</td>
+    <td colSpan={fy.length + 3}>&nbsp;</td>
 
   </tr>
   {/* TOWER UPGRADE SECTION */}
   {/* UPGRADE SECTION */}
 <tr>
-  <td colSpan={fy.length + 2} style={{ fontWeight: 'bold', backgroundColor: '#E70E5B', color: '#F5F5F5', textAlign: 'center' }}>
+  <td colSpan={fy.length + 3} style={{ fontWeight: 'bold', backgroundColor: '#E70E5B', color: '#F5F5F5', textAlign: 'center' }}>
     TOWER UPGRADE SECTION
   </td>
   </tr>
   {/* Ligne vide */}
   <tr>
-    <td colSpan={fy.length + 2}>&nbsp;</td>
+    <td colSpan={fy.length + 3}>&nbsp;</td>
   </tr>
 
 
@@ -532,100 +592,100 @@ const towerUpgradeCustomDuty = towerUpgradeCapex.map(val => val * customDutyPct)
 </tr>
 <tr>
   <td>Unit Price Tower Upgrade</td><td>USDk</td>
+  <td></td>  {/* Vide */}
   {Array(fy.length).fill(towerUpgradeUnitPrice).map((v, i) => <td key={i}>{formatNumber(v)}</td>)}
 </tr>
 <tr style={{ fontWeight: 'bold', backgroundColor: '#F8DADA' }}>
   <td>Total Capex Tower Upgrade</td><td>USDk</td>
+  <td></td>  {/* Vide */}
   {towerUpgradeCapex.map((v, i) => <td key={i}>{formatNumber(v)}</td>)}
 </tr>
   {/* Ligne vide */}
   <tr>
-    <td colSpan={fy.length + 2}>&nbsp;</td>
+    <td colSpan={fy.length + 3}>&nbsp;</td>
   </tr>
 <tr>
   <td>Custom Duty Tower Upgrade</td><td>USDk</td>
+  <td></td>  {/* Vide */}
   {towerUpgradeCustomDuty.map((v, i) => <td key={i}>{formatNumber(v)}</td>)}
 </tr>
  
 <tr style={{ fontWeight: 'bold', backgroundColor: '#F8DADA' }}>
   <td>Total Tower Capex + Duty + Upgrade</td><td>USDk</td>
+  <td></td>  {/* Vide */}
   {totalTowerCapexWithDutyAndUpgrade.map((v, i) => <td key={i}>{formatNumber(v)}</td>)}
 </tr>
 
 
   {/* Ligne vide */}
   <tr>
-    <td colSpan={fy.length + 2}>&nbsp;</td>
+    <td colSpan={fy.length + 3}>&nbsp;</td>
   </tr>
 
   {/* RAN SECTION */}
   {ran2G.length > 0 && (
     <>
       <tr>
-        <td colSpan={fy.length + 2} style={{ fontWeight: 'bold', backgroundColor: '#E70E5B', color: '#F5F5F5', textAlign: 'center' }}>
+        <td colSpan={fy.length + 3} style={{ fontWeight: 'bold', backgroundColor: '#E70E5B', color: '#F5F5F5', textAlign: 'center' }}>
           RAN SECTION
         </td>
       </tr>
         {/* Ligne vide */}
   <tr>
-    <td colSpan={fy.length + 2}>&nbsp;</td>
-  </tr>
-      <tr>
-        <td>2G Sites</td><td>#</td>
-        {ran2G.map((v, i) => <td key={i}>{formatNumber(v)}</td>)}
-      </tr>
-      <tr>
-        <td>3G Sites</td><td>#</td>
-        {ran3G.map((v, i) => <td key={i}>{formatNumber(v)}</td>)}
-      </tr>
-      <tr>
-        <td>4G Sites</td><td>#</td>
-        {ran4G.map((v, i) => <td key={i}>{formatNumber(v)}</td>)}
-      </tr>
-      <tr>
-        <td>5G Sites</td><td>#</td>
-        {ran5G.map((v, i) => <td key={i}>{formatNumber(v)}</td>)}
-      </tr>
-    </>
-  )}
-
-  {/* Nombre de PoP */}
-  <tr>
-    <td style={{ fontWeight: 'bold' }}>Nombre de PoP</td><td>#</td>
-    {totalPoP.map((v, i) => (
-      <td key={i} style={{ fontWeight: 'bold' }}>{formatNumber(v)}</td>
-    ))}
-  </tr>
-    {/* Ligne vide */}
-    <tr>
-    <td colSpan={fy.length + 2}>&nbsp;</td>
+    <td colSpan={fy.length + 3}>&nbsp;</td>
   </tr>
   <tr>
-  <td>New RAN PoP (2G, 3G, 4G)</td><td>#</td>
-  {newRan234.map((v, i) => <td key={i}>{formatNumber(v)}</td>)}
+  <td>New RAN 2G PoP</td><td>#</td>
+  <td></td>
+  {newRan2G.map((v, i) => <td key={i}>{formatNumber(v)}</td>)}
+</tr>
+<tr>
+  <td>Unit Price RAN 2G</td><td>USDk</td>
+  <td>{getInputValue('ran2GUnitPrice')}</td>
+  {Array(fy.length).fill(ran2GUnitPrice).map((v, i) => <td key={i}>{formatNumber(v)}</td>)}
 </tr>
 
 <tr>
-  <td>New RAN PoP (5G)</td><td>#</td>
+  <td>New RAN 3G PoP</td><td>#</td>
+  <td></td>
+  {newRan3G.map((v, i) => <td key={i}>{formatNumber(v)}</td>)}
+</tr>
+<tr>
+  <td>Unit Price RAN 3G</td><td>USDk</td>
+  <td>{getInputValue('ran3GUnitPrice')}</td>
+  {Array(fy.length).fill(ran3GUnitPrice).map((v, i) => <td key={i}>{formatNumber(v)}</td>)}
+</tr>
+
+<tr>
+  <td>New RAN 4G PoP</td><td>#</td>
+  <td></td>
+  {newRan4G.map((v, i) => <td key={i}>{formatNumber(v)}</td>)}
+</tr>
+<tr>
+  <td>Unit Price RAN 4G</td><td>USDk</td>
+  <td>{getInputValue('ran4GUnitPrice')}</td>
+  {Array(fy.length).fill(ran4GUnitPrice).map((v, i) => <td key={i}>{formatNumber(v)}</td>)}
+</tr>
+
+<tr>
+  <td>New RAN 5G PoP</td><td>#</td>
+  <td></td>
   {newRan5G.map((v, i) => <td key={i}>{formatNumber(v)}</td>)}
 </tr>
-
 <tr>
-  <td>Unit Price RAN (2G, 3G, 4G)</td><td>USDk</td>
-  {Array(fy.length).fill(ran234UnitPrice).map((v, i) => <td key={i}>{formatNumber(v)}</td>)}
-</tr>
-
-<tr>
-  <td>Unit Price RAN (5G)</td><td>USDk</td>
+  <td>Unit Price RAN 5G</td><td>USDk</td>
+  <td>{getInputValue('ran5GUnitPrice')}</td>
   {Array(fy.length).fill(ran5GUnitPrice).map((v, i) => <td key={i}>{formatNumber(v)}</td>)}
 </tr>
+
  {/* Ligne vide */}
  <tr>
-    <td colSpan={fy.length + 2}>&nbsp;</td>
+    <td colSpan={fy.length + 3}>&nbsp;</td>
   </tr>
 <tr style={{ fontWeight: 'bold', backgroundColor: '#F8DADA' }}>
   <td>Total Capex RAN</td>
   <td>USDk</td>
+  <td></td>  {/* Vide */}
   {totalCapexRAN.map((v, i) => <td key={i}>{formatNumber(v)}</td>)}
 </tr>
 {/* Ligne vide */}
@@ -635,70 +695,78 @@ const towerUpgradeCustomDuty = towerUpgradeCapex.map(val => val * customDutyPct)
 <tr>
   <td>Custom Duty RAN %</td>
   <td>%</td>
+  <td></td>  {/* Vide */}
   {ranCustomDutyPctArray.map((p, i) => <td key={i}>{p}</td>)}
 </tr>
 <tr>
   <td>Custom Duty RAN</td>
   <td>USDk</td>
+  <td></td>  {/* Vide */}
   {ranCustomDuty.map((v, i) => <td key={i}>{formatNumber(v)}</td>)}
 </tr>
  {/* Ligne vide */}
  <tr>
-    <td colSpan={fy.length + 2}>&nbsp;</td>
+    <td colSpan={fy.length + 3}>&nbsp;</td>
   </tr>
 <tr style={{ fontWeight: 'bold', backgroundColor: '#F8DADA' }}>
   <td>Total Capex RAN + Duty</td><td>USDk</td>
+  <td></td>  {/* Vide */}
   {totalCapexRANWithDuty.map((v, i) => <td key={i}>{formatNumber(v)}</td>)}
 </tr>
 
  {/* Ligne vide */}
  <tr>
-    <td colSpan={fy.length + 2}>&nbsp;</td>
+    <td colSpan={fy.length + 3}>&nbsp;</td>
   </tr>
 {/* RAN UPGRADE SECTION */}
 
 <tr>
-  <td colSpan={fy.length + 2} style={{ fontWeight: 'bold', backgroundColor: '#E70E5B', color: '#F5F5F5', textAlign: 'center' }}>
+  <td colSpan={fy.length + 3} style={{ fontWeight: 'bold', backgroundColor: '#E70E5B', color: '#F5F5F5', textAlign: 'center' }}>
     RAN UPGRADE SECTION
   </td>
 </tr>
      {/* Ligne vide */}
      <tr>
-    <td colSpan={fy.length + 2}>&nbsp;</td>
+    <td colSpan={fy.length + 3}>&nbsp;</td>
   </tr>
 
 
 <tr>
   <td style={{ fontWeight: 'bold' }}>RAN Upgrades Units</td><td>#</td>
+  <td></td>  {/* Vide */}
   {ranUpgradeUnits.map((v, i) => <td key={i}>{formatNumber(v)}</td>)}
 </tr>
 <tr>
   <td>Unit Price RAN Upgrade</td><td>USDk</td>
+  <td></td>  {/* Vide */}
   {Array(fy.length).fill(ranUpgradeUnitPrice).map((v, i) => <td key={i}>{formatNumber(v)}</td>)}
 </tr>
 <tr style={{ fontWeight: 'bold', backgroundColor: '#F8DADA' }}>
   <td>Total Capex RAN Upgrade</td><td>USDk</td>
+  <td></td>  {/* Vide */}
   {ranUpgradeCapex.map((v, i) => <td key={i}>{formatNumber(v)}</td>)}
 </tr>
   {/* Ligne vide */}
   <tr>
-    <td colSpan={fy.length + 2}>&nbsp;</td>
+    <td colSpan={fy.length + 3}>&nbsp;</td>
   </tr>
 <tr>
   <td>Custom Duty RAN Upgrade</td><td>USDk</td>
+  <td></td>  {/* Vide */}
   {ranUpgradeCustomDuty.map((v, i) => <td key={i}>{formatNumber(v)}</td>)}
 </tr>
  {/* Ligne vide */}
  <tr>
-    <td colSpan={fy.length + 2}>&nbsp;</td>
+    <td colSpan={fy.length + 3}>&nbsp;</td>
   </tr>
  
 <tr style={{ fontWeight: 'bold',backgroundColor: '#F8DADA'}}>
   <td>Total Capex RAN + Duty + Upgrade</td><td>USDk</td>
+  <td></td>  {/* Vide */}
   {totalCapexRANWithDutyAndUpgrade.map((v, i) => <td key={i}>{formatNumber(v)}</td>)}
 </tr>
-
-
+</>
+  )}
 </tbody>
 
       </table>
