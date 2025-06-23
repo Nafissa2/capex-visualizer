@@ -2,6 +2,9 @@ import React from 'react';
 import { Handle, Position } from 'reactflow';
 
 export default function TowerNode({ data }) {
+  // 🔑 Sécurité : garantir un chemin absolu vers public/
+  const imageSrc = data.image?.startsWith('/') ? data.image : `/${data.image}`;
+
   return (
     <div
       style={{
@@ -29,9 +32,9 @@ export default function TowerNode({ data }) {
         {data.label}
       </div>
 
-      {/* Image */}
+      {/* ✅ Image avec chemin public correct */}
       <img
-        src={data.image}
+        src={imageSrc}
         alt="Tower"
         style={{
           width: '100%',
@@ -42,25 +45,21 @@ export default function TowerNode({ data }) {
       />
 
       {/* ✅ Handles */}
-      {/* Source à droite */}
       <Handle
         type="source"
         position={Position.Right}
         style={{ background: '#0C154B' }}
       />
-      {/* ✅ Source à gauche aussi */}
       <Handle
         type="source"
         position={Position.Left}
         style={{ background: '#0C154B' }}
       />
-      {/* Target à gauche */}
       <Handle
         type="target"
         position={Position.Left}
         style={{ background: '#0C154B' }}
       />
-      {/* (optionnel) Target à droite si besoin */}
       <Handle
         type="target"
         position={Position.Right}
