@@ -75,8 +75,8 @@ export default function App() {
               onClick={() => setMode('qcm')}
               style={{
                 position: 'absolute',
-                top: '500px',
-                right: '70px',
+                top: '600px',
+                right: '-40px',
                 zIndex: 20,
                 padding: '10px 20px',
                 fontSize: '18px',
