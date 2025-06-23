@@ -49,10 +49,11 @@ export default function Questionnaire({ onFinish, questions: externalQuestions, 
           extra.push({ question: "How many towers were built initially ?", key: "initialBuild", type: "number" });
           extra.push({ question:"Is the build growth uniform or variable?", key: "growthTypeBuild", options: ["Uniforme", "Variable"] });
         } else {
-          extra.push({ question: "How many lease towers were there initially?", key: "initialLease", type: "number" });
-          extra.push({ question: "How many towers were built at the start?", key: "initialBuild", type: "number" });
-          extra.push({ question: "Is the growth for lease uniform or variable?", key: "growthTypeLease", options: ["Uniforme", "Variable"] });
-          extra.push({ question: "Is the growth for build uniform or variable?", key: "growthTypeBuild", options: ["Uniforme", "Variable"] });
+          extra.push({ question: "How many lease towers initially?", key: "initialLease", type: "number" });
+          extra.push({ question: "How many towers were built initially?", key: "initialBuild", type: "number" });
+          extra.push({ question: "Is the growth for lease uniform, variable, or both?", key: "growthTypeLease", options: ["Uniforme", "Variable", "Both"] });
+          extra.push({ question: "Is the growth for build uniform, variable, or both?", key: "growthTypeBuild", options: ["Uniforme", "Variable", "Both"] });
+
         }
         setQuestions(prev => [...prev, ...extra]);
         setStep(step + 1);
@@ -65,24 +66,46 @@ export default function Questionnaire({ onFinish, questions: externalQuestions, 
         const finalKey = isLease ? "growthLeaseUniform" : "growthBuildUniform";
         const start = parseInt(newResp.startYear);
         const duration = parseInt(newResp.durationYears);
-
+      
         if (final === "Uniforme") {
-          setQuestions(prev => [...prev, { question: `How many new towers ${isLease ? "Lease" : "Build"} par an ?`, key: finalKey, type: "number" }]);
-        } else {
+          setQuestions(prev => [
+            ...prev,
+            { question: `How many new towers ${isLease ? "Lease" : "Build"} par an ?`, key: finalKey, type: "number" }
+          ]);
+        } else if (final === "Variable") {
           const extra = [];
           for (let i = 1; i < duration; i++) {
             const fy = `FY${String(start + i).slice(-2)}`;
             extra.push({ question: `How many new towers ${isLease ? "Lease" : "Build"} pour ${fy} ?`, key: `${prefix}${fy}`, type: "number" });
           }
           setQuestions(prev => [...prev, ...extra]);
+        } else if (final === "Both") {
+          // Both: d'abord Uniforme, puis toutes les années spécifiques
+          const extra = [
+            { question: `How many towers ${isLease ? "Lease" : "Build"} per year (Uniforme part) ?`, key: finalKey, type: "number" }
+          ];
+          for (let i = 1; i < duration; i++) {
+            const fy = `FY${String(start + i).slice(-2)}`;
+            extra.push({ question: `How many towers ${isLease ? "Lease" : "Build"} for ${fy} (Specific part) ?`, key: `${prefix}${fy}`, type: "number" });
+          }
+          setQuestions(prev => [...prev, ...extra]);
         }
+      
         setStep(step + 1);
         return;
       }
+      
 
       if (
-        current.key === "growthLeaseUniform" || current.key.startsWith("growthLease_") ||
-        current.key === "growthBuildUniform" || current.key.startsWith("growthBuild_")
+        current.key === "growthLeaseUniform" || current.key === "growthBuildUniform" ||
+        (
+          current.key.startsWith("growthLease_") &&
+          current.key === `growthLease_FY${String(parseInt(newResp.startYear) + parseInt(newResp.durationYears) - 1).slice(-2)}`
+        ) ||
+        (
+          current.key.startsWith("growthBuild_") &&
+          current.key === `growthBuild_FY${String(parseInt(newResp.startYear) + parseInt(newResp.durationYears) - 1).slice(-2)}`
+        )
       ) {
         const plan = newResp.buildOrLease;
         const extra = [];
@@ -96,52 +119,73 @@ export default function Questionnaire({ onFinish, questions: externalQuestions, 
         setStep(step + 1);
         return;
       }
+// ✅ UN SEUL BLOC PERCENT URBAN
+if (current.key === "percentUrbanLease" || current.key === "percentUrbanBuild") {
+  const plan = newResp.buildOrLease;
 
-      if (current.key === "percentUrbanLease" || current.key === "percentUrbanBuild") {
-        const plan = newResp.buildOrLease;
-        const extra = [];
-        if (plan === "Lease" || plan === "Both") {
-          extra.push({ question: "What is the unit price for lease urban (in USDk)?( Range:15USDk - 20USDk )", key: "leasePriceUrban", type: "number" });
-          extra.push({ question: "What is the unit price for lease rural (in USDk)?( Range:10USDk - 15USDk )", key: "leasePriceRural", type: "number" });
-        }
-        if (plan === "Build" || plan === "Both") {
-          extra.push({ question: "What is the unit price for build urban (in USDk)?( Range : 100USDk - 120USDk )", key: "buildPriceUrban", type: "number" });
-          extra.push({ question: "What is the unit price for build rural (in USDk)?( Range : 80USDk - 100USDk )", key: "buildPriceRural", type: "number" });
-        }
-        extra.push({ question: "Want Tower Upgrade ?", key: "wantTowerUpgrade", options: ["YES", "NO"] });
-        setQuestions(prev => [...prev, ...extra]);
-        setStep(step + 1);
-        return;
-      }
+  if (plan === "Both") {
+    const leaseDone = newResp.percentUrbanLease !== undefined;
+    const buildDone = newResp.percentUrbanBuild !== undefined;
+    const alreadyAdded = newResp._unitPriceDone;
 
-      if (current.key === "wantTowerUpgrade") {
-        if (final === "YES") {
-          const suffix = suffixCounter;
-          setSuffixCounter(suffixCounter + 1);
+    if (leaseDone && buildDone && !alreadyAdded) {
+      newResp._unitPriceDone = true;
+      setResponses(newResp);
+      const extra = [
+        { question: "What is the unit price for lease urban (USDk)? ( Range :15USDk - 20 USDk )", key: "leasePriceUrban", type: "number" },
+        { question: "What is the unit price for lease rural (USDk)? ( Range :15USDk - 20 USDk )", key: "leasePriceRural", type: "number" },
+        { question: "What is the unit price for build urban (USDk)? ( Range :100USDk - 120 USDk )", key: "buildPriceUrban", type: "number" },
+        { question: "What is the unit price for build rural (USDk)? ( Range :80USDk - 100 USDk )", key: "buildPriceRural", type: "number" },
+        { question: "Want Tower Upgrade?", key: "wantTowerUpgrade", options: ["YES", "NO"] }
+      ];
+      setQuestions(prev => [...prev, ...extra]);
+    }
+    setStep(step + 1);
+    return;
+  }
+
+  if (!newResp._unitPriceDone) {
+    newResp._unitPriceDone = true;
+    setResponses(newResp);
+    const extra = [];
+    if (plan === "Lease") {
+      extra.push({ question: "What is the unit price for lease urban (USDk)?", key: "leasePriceUrban", type: "number" });
+      extra.push({ question: "What is the unit price for lease rural (USDk)?", key: "leasePriceRural", type: "number" });
+    }
+    if (plan === "Build") {
+      extra.push({ question: "What is the unit price for build urban (USDk)?", key: "buildPriceUrban", type: "number" });
+      extra.push({ question: "What is the unit price for build rural (USDk)?", key: "buildPriceRural", type: "number" });
+    }
+    extra.push({ question: "Want Tower Upgrade?", key: "wantTowerUpgrade", options: ["YES", "NO"] });
+    setQuestions(prev => [...prev, ...extra]);
+  }
+
+  setStep(step + 1);
+  return;
+}
+
+
+
+
+  // Si Lease seul ou Build seul : direct le bloc
+
+
       
-          //  on insère D'ABORD la question du prix unitaire, puis celle de l'année
-          const extra = [
-            {
-              question: "What is the unit price for Tower Upgrade (in USDk) ( Range : 7USDk - 15USDk )?",
-              key: "towerUpgradeUnitPrice",
-              type: "number"
-            },
-            {
-              question: "For which year?",
-              key: `towerUpgradeYear_${suffix}`,
-              type: "number"
-            }
-          ];
-          setQuestions(prev => [...prev, ...extra]);
-        } else {
-          setQuestions(prev => [
-            ...prev,
-            { question: "Want RAN upgrade?", key: "wantRANUpgrade", options: ["YES", "NO"] }
-          ]);
-        }
+      if (current.key === "towerUpgradeUnitPrice") {
+        const suffix = suffixCounter;
+        setSuffixCounter(suffixCounter + 1);
+        setQuestions(prev => [
+          ...prev,
+          {
+            question: "For which year?",
+            key: `towerUpgradeYear_${suffix}`,
+            type: "number"
+          }
+        ]);
         setStep(step + 1);
         return;
       }
+      
       
 
       if (current.key.startsWith("towerUpgradeYear_")) {
@@ -159,48 +203,71 @@ export default function Questionnaire({ onFinish, questions: externalQuestions, 
         if (final === "YES") {
           const suffix = suffixCounter;
           setSuffixCounter(suffixCounter + 1);
-          setQuestions(prev => [...prev, { question: "For which year ?", key: `towerUpgradeYear_${suffix}`, type: "number" }]);
+          setQuestions(prev => [
+            ...prev,
+            { question: "For which year?", key: `towerUpgradeYear_${suffix}`, type: "number" }
+          ]);
+          setStep(step + 1);
         } else {
-          setQuestions(prev => [...prev, { question: "Want RAN Upgrade ?", key: "wantRANUpgrade", options: ["YES", "NO"] }]);
+          // ✅ Vérifie que RAN Upgrade n’a pas déjà été ajouté
+          if (!newResp._ranAsked) {
+            newResp._ranAsked = true;
+            setResponses(newResp);
+            setQuestions(prev => [
+              ...prev,
+              { question: "Want RAN Upgrade?", key: "wantRANUpgrade", options: ["YES", "NO"] }
+            ]);
+          }
+          setStep(step + 1);
         }
-        setStep(step + 1);
         return;
       }
+      
+      
+      
 
-      if (current.key === "wantRANUpgrade") {
+      if (current.key === "wantTowerUpgrade") {
+        const plan = newResp.buildOrLease;
         if (final === "YES") {
           const suffix = suffixCounter;
           setSuffixCounter(suffixCounter + 1);
-          setQuestions(prev => [...prev, { question: "For Which year ?", key: `ranUpgradeYear_${suffix}`, type: "number" }]);
+          setQuestions(prev => [
+            ...prev,
+            { question: "For which year?", key: `towerUpgradeYear_${suffix}`, type: "number" }
+          ]);
+          setStep(step + 1);
         } else {
-          onFinish(newResp);
+          // Si pas d'upgrade : poser RAN Upgrade si plan = Both
+          if (plan === "Both" && !newResp._ranAsked) {
+            newResp._ranAsked = true;
+            setResponses(newResp);
+            setQuestions(prev => [
+              ...prev,
+              { question: "Want RAN Upgrade?", key: "wantRANUpgrade", options: ["YES", "NO"] }
+            ]);
+          } else {
+            onFinish(newResp);
+          }
+          setStep(step + 1);
         }
-        setStep(step + 1);
         return;
       }
-
-      if (current.key.startsWith("ranUpgradeYear_")) {
-        const suffix = current.key.split("_")[1];
-        const extra = [
-          { question: "What % of PoPs to upgrade?", key: `ranUpgradePercent_${suffix}`, type: "number" },
-          { question: "Want RAN upgrade for another year ?", key: `addMoreRANUpgrade_${suffix}`, options: ["YES", "NO"] },
-        ];
-        setQuestions(prev => [...prev, ...extra]);
-        setStep(step + 1);
-        return;
-      }
-
+      
+      
+      
       if (current.key.startsWith("addMoreRANUpgrade_")) {
         if (final === "YES") {
           const suffix = suffixCounter;
           setSuffixCounter(suffixCounter + 1);
           setQuestions(prev => [...prev, { question: "For which year ?", key: `ranUpgradeYear_${suffix}`, type: "number" }]);
+          setStep(step + 1);
         } else {
           onFinish(newResp);
         }
-        setStep(step + 1);
         return;
       }
+      
+      
     }
 
     // ✅ Sinon : progression liste fixe ou fin

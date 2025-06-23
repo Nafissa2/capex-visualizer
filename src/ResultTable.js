@@ -23,10 +23,15 @@ const getInputValue = (key, condition = true) => {
     let growth = 0;
     if (answers.growthTypeLease === "Uniforme") {
       growth = parseInt(answers.growthLeaseUniform) || 0;
-    } else {
+    } else if (answers.growthTypeLease === "Specific") {
       const key = `growthLease_${fy[i]}`;
       growth = parseInt(answers[key]) || 0;
+    } else if (answers.growthTypeLease === "both") {
+      const uniform = parseInt(answers.growthLeaseUniform) || 0;
+      const specific = parseInt(answers[`growthLease_${fy[i]}`]) || 0;
+      growth = uniform + specific;
     }
+    
     lease[i] = lease[i - 1] + growth;
   }
 
@@ -37,10 +42,15 @@ const getInputValue = (key, condition = true) => {
     let growth = 0;
     if (answers.growthTypeBuild === "Uniforme") {
       growth = parseInt(answers.growthBuildUniform) || 0;
-    } else {
+    } else if (answers.growthTypeBuild === "Specific") {
       const key = `growthBuild_${fy[i]}`;
       growth = parseInt(answers[key]) || 0;
+    } else if (answers.growthTypeBuild === "both") {
+      const uniform = parseInt(answers.growthBuildUniform) || 0;
+      const specific = parseInt(answers[`growthBuild_${fy[i]}`]) || 0;
+      growth = uniform + specific;
     }
+    
     build[i] = build[i - 1] + growth;
   }
 
