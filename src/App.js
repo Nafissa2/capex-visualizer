@@ -25,10 +25,10 @@ export default function App() {
       { question: "What % of this total for 3G?", key: "ran3GTargetPct", type: "number" },
       { question: "What % of this total for 4G?", key: "ran4GTargetPct", type: "number" },
       { question: "What % of this total for 5G?", key: "ran5GTargetPct", type: "number" },
-      { question: "What is the unit price for RAN 2G?", key: "ran2GUnitPrice", type: "number" },
-      { question: "What is the unit price for RAN 3G?", key: "ran3GUnitPrice", type: "number" },
-      { question: "What is the unit price for RAN 4G?", key: "ran4GUnitPrice", type: "number" },
-      { question: "What is the unit price for RAN 5G?", key: "ran5GUnitPrice", type: "number" },
+      { question: "What is the unit price for RAN 2G? ( Range : 25USDk - 35USDk )", key: "ran2GUnitPrice", type: "number" },
+      { question: "What is the unit price for RAN 3G? ( Range : 25USDk - 35USDk )", key: "ran3GUnitPrice", type: "number" },
+      { question: "What is the unit price for RAN 4G? ( Range : 25USDk - 35USDk )", key: "ran4GUnitPrice", type: "number" },
+      { question: "What is the unit price for RAN 5G? ( Range : 40USDk - 50USDk )", key: "ran5GUnitPrice", type: "number" },
       { question: "What is the unit price for RAN Upgrade?", key: "ranUpgradeUnitPrice", type: "number" },
     ];
     
@@ -75,8 +75,8 @@ export default function App() {
               onClick={() => setMode('qcm')}
               style={{
                 position: 'absolute',
-                top: '700px',
-                right: '40px',
+                top: '500px',
+                right: '70px',
                 zIndex: 20,
                 padding: '10px 20px',
                 fontSize: '18px',
